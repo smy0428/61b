@@ -72,10 +72,10 @@ public class NBody {
               StdDraw.pause(10);
           }
 
-          StdOut.printf("%d/n", len);
-          StdOut.printf("%.2e/n", universeRadius);
+          StdOut.printf("%d\n", len);
+          StdOut.printf("%.2e\n", universeRadius);
           for (Planet planet: planets){
-              StdOut.printf("%11.4e %11.4e %11.4e %11.4e %11.4e %11s/n",
+              StdOut.printf("%11.4e %11.4e %11.4e %11.4e %11.4e %12s\n",
               planet.xxPos, planet.yyPos, planet.xxVel,
               planet.yyVel, planet.mass, planet.imgFileName);
           }
