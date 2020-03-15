@@ -1,9 +1,9 @@
 public class LinkedListDeque<T> {
-    public class StuffNode {
-        public T item;
-        public StuffNode next;
-        public StuffNode previous;
-        public StuffNode(T i, StuffNode n, StuffNode m) {
+    private class StuffNode {
+        private T item;
+        private StuffNode next;
+        private StuffNode previous;
+        private StuffNode(T i, StuffNode n, StuffNode m) {
             item = i;
             next = n;
             previous = m;
@@ -19,8 +19,8 @@ public class LinkedListDeque<T> {
         }
     }
 
-    public StuffNode sentinel;
-    public int size;
+    private StuffNode sentinel;
+    private int size;
 
     public LinkedListDeque() {
         size = 0;
@@ -28,14 +28,7 @@ public class LinkedListDeque<T> {
         sentinel.next = sentinel;
         sentinel.previous = sentinel;
     }
-    public LinkedListDeque(T x) {
-        size = 1;
-        sentinel = new StuffNode(x, null, null);
-        sentinel.next = new StuffNode(x, null, null);
-        sentinel.previous = sentinel.next;
-        sentinel.previous.previous = sentinel;
-        sentinel.next.next = sentinel;
-    }
+
 
     public int size() {
         return size;
@@ -121,7 +114,7 @@ public class LinkedListDeque<T> {
 
 
 
-    public static void main(String[] args) {
+    private static void main(String[] args) {
         LinkedListDeque<Integer> L = new LinkedListDeque<Integer>();
         L.addFirst(10);
         L.addLast(20);

@@ -1,12 +1,12 @@
 public class ArrayDeque<T> {
-    T[] items;
-    int size;
-    int nextFirst;
-    int nextLast;
+    private T[] items;
+    private int size;
+    private int nextFirst;
+    private int nextLast;
 
 
     //* helper method to increase index circularly */
-    public int loopAdd(int a) {
+    private int loopAdd(int a) {
         if (a + 1 == items.length) {
             return 0;
         } else {
@@ -15,7 +15,7 @@ public class ArrayDeque<T> {
     }
 
     //* helper method to decrease index circularly */
-    public int loopSub(int a) {
+    private int loopSub(int a) {
         if (a == 0) {
             return items.length - 1;
         } else {
@@ -25,7 +25,7 @@ public class ArrayDeque<T> {
 
 
     //* helper method to get the actual index */
-    public int actualIndex(int a) {
+    private int actualIndex(int a) {
         int actual = nextFirst + a + 1;
         if (actual >= items.length) {
             actual -= items.length;
@@ -35,7 +35,7 @@ public class ArrayDeque<T> {
 
 
     //* helper method to check whether the usage ratio is lower as 0.25 */
-    public boolean usageLow() {
+    private boolean usageLow() {
         int usageRatio = 100 * size / items.length;
         return (items.length >= 16 && usageRatio < 25);
     }
@@ -152,7 +152,7 @@ public class ArrayDeque<T> {
     }
 
 
-    public static void main(String[] args) {
+    private static void main(String[] args) {
         ArrayDeque<Integer> L = new ArrayDeque<Integer>();
         L.addFirst(10);
         L.addLast(20);
