@@ -113,6 +113,7 @@ public class ArrayDeque<T> {
         if (size == 0) {
             return null;
         } else {
+            size -= 1;
             int indexFirst = loopAdd(nextFirst);
             nextFirst = indexFirst;
             T x = items[indexFirst];
@@ -155,25 +156,7 @@ public class ArrayDeque<T> {
     private static void main(String[] args) {
         ArrayDeque<Integer> L = new ArrayDeque<Integer>();
         L.addFirst(10);
-        L.addLast(20);
-        L.addLast(30);
-        L.addLast(40);
-        L.addLast(50);
-        L.addLast(60);
-        L.addLast(70);
-        L.addLast(80);
-        L.addLast(90);
-        L.addFirst(0);
-        L.addFirst(100);
-        L.removeLast();
-        L.removeLast();
-        L.removeLast();
-        L.removeLast();
-        L.removeLast();
-        L.removeLast();
-        L.removeLast();
-        L.removeLast();
-        L.removeLast();
-        L.printDeque();
+        L.removeFirst();
+        System.out.print(L.isEmpty());
     }
 }
