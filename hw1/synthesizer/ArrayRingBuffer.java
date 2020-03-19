@@ -35,7 +35,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
      * covered Monday.
      */
 
-    public int increment(int x) {
+    private int increment(int x) {
         int a = (1 + x) % capacity;
         return a;
     }
@@ -75,6 +75,9 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
      */
     @Override
     public T peek() {
+        if (isEmpty()) {
+            throw new RuntimeException("Ring Buffer Underflow");
+        }
         return rb[first];
         // Return the first item. None of your instance variables should change.
     }
@@ -87,9 +90,12 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
             ptr = first;
         }
         public boolean hasNext() {
-            return (0 != fillCount);
+            return (ptr != last);
         }
         public T next() {
+            if (!hasNext()) {
+                throw new RuntimeException("Ring Buffer Iterable Underflow");
+            }
             T nextBuff = rb[ptr];
             ptr = increment(ptr);
             return nextBuff;
