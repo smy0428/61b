@@ -23,6 +23,18 @@ public class TestArrayRingBuffer {
         assertTrue(arb.isEmpty());
     }
 
+    @Test
+    public void someOtherTest() {
+        ArrayRingBuffer<Integer> arbOther = new ArrayRingBuffer(10);
+        arbOther.enqueue(6);
+        arbOther.enqueue(7);
+        arbOther.enqueue(8);
+        for (int i: arbOther) {
+            System.out.println(i);
+        }
+    }
+
+
     /** Calls tests for ArrayRingBuffer. */
     public static void main(String[] args) {
         jh61b.junit.textui.runClasses(TestArrayRingBuffer.class);
