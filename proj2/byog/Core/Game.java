@@ -9,11 +9,13 @@ import java.util.Random;
 
 public class Game {
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 30;
+    public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
     private static final long SEED = 28042007;
     private static final Random RANDOM = new Random(SEED);
     Position start;
+    public static int a;
+    public static int b;
 
 
 
@@ -177,27 +179,32 @@ public class Game {
 
     public void addNextNSquare(Room pre, Worldmap m) {
         while (m.usageRatio() < 0.5) {
-            //(x, y) random point in the screen
+            //(x, y) random point in the screen (actually is x > pre.randomP.x or y > pre.randomP.y)
             int x = RANDOM.nextInt(WIDTH);
-            while (Math.abs(pre.randomP.x - x) < 3 ) {
-                x = RANDOM.nextInt(WIDTH);
-            }
             int y = RANDOM.nextInt(HEIGHT);
-            while (Math.abs(pre.randomP.y - y) < 3) {
+
+            int dX = Math.abs(pre.randomP.x - x);
+            int dY = Math.abs(pre.randomP.y - y);
+            while (dX < 3 || dY < 3 || dX * dY > 81 || (x < pre.randomP.x && y < pre.randomP.y)) {
+                x = RANDOM.nextInt(WIDTH);
                 y = RANDOM.nextInt(HEIGHT);
+                dX = Math.abs(pre.randomP.x - x);
+                dY = Math.abs(pre.randomP.y - y);
             }
 
             // get the right width, height, start point of new room
-            pre.randomP = new Position(Math.min(pre.randomP.x, x), Math.min(pre.randomP.y, y));
+            int newX = Math.min(pre.randomP.x, x);
+            int newY = Math.min(pre.randomP.y, y);
+            System.out.println("newX is " + newX + " . newY is " + newY + " .");
+            Position newP = new Position(newX, newY);
             int width = Math.abs(pre.randomP.x - x);
             int height = Math.abs(pre.randomP.y - y);
 
-            Room next = new Room();
-            next.drawRoom(width, height, pre.randomP);
-            for (Position pp : next.wallTiles) {
+            pre.drawRoom(width, height, newP);
+            for (Position pp : pre.wallTiles) {
                 m.addWall(pp);
             }
-            for (Position pp : next.floorTiles) {
+            for (Position pp : pre.floorTiles) {
                 m.addFloor(pp);
             }
         }
@@ -225,7 +232,7 @@ public class Game {
         Worldmap m = new Worldmap();
         Game g = new Game();
         Room first = new Room();
-        first.drawRoom(4, 4, start);
+        first.drawRoom(7, 4, start);
         g.addFirstSquare(first, m);
         g.addNextNSquare(first, m);
 
@@ -242,5 +249,6 @@ public class Game {
         }
 
         ter.renderFrame(finalWorldFrame);
+
     }
 }
