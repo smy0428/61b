@@ -25,7 +25,7 @@ public class PercolationStats {
                     }
                     p.open(helperRow(N, id), helperCol(N, id));
                 }
-                fractionOpen[i] = p.numberOfOpenSites();
+                fractionOpen[i] = 1.0 * p.numberOfOpenSites() / (N * N);
             }
         }
     }
@@ -55,23 +55,24 @@ public class PercolationStats {
 
     public double confidenceLow() {
         double cL = StdStats.mean(fractionOpen)
-                - 1.96 * Math.sqrt(StdStats.stddev(fractionOpen) / times);
+                - 1.96 * StdStats.stddev(fractionOpen) / Math.sqrt(times);
         return cL;
     }
 
 
     public double confidenceHigh() {
         double cH = StdStats.mean(fractionOpen)
-                + 1.96 * Math.sqrt(StdStats.stddev(fractionOpen) / times);
+                + 1.96 * StdStats.stddev(fractionOpen) / Math.sqrt(times);
         return cH;
     }
 
 
-    public static void main(String[] args) {
+    private static void main(String[] args) {
         Stopwatch timer1 = new Stopwatch();
 
         PercolationFactory pf = new PercolationFactory();
         PercolationStats plS = new PercolationStats(160, 100, pf);
+        System.out.println(plS.mean());
         System.out.println(plS.confidenceLow());
         System.out.println(plS.confidenceHigh());
 
