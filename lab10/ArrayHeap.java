@@ -169,8 +169,13 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         if (size < 1) {
             return null;
         }
+        Node root = contents[1];
+        if (size == 1) {
+            contents[1] = null;
+            size -= 1;
+            return root.item();
+        }
         swap(1, size);
-        Node root = contents[size];
         contents[size] = null;
         size -= 1;
         sink(1);
