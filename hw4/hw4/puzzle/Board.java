@@ -107,8 +107,6 @@ public class Board implements WorldState {
     private class Position {
         int row;
         int col;
-        ArrayList<Position> neighbors = new ArrayList<>();
-
 
         Position(int i, int j) {
             row = i;
@@ -128,6 +126,7 @@ public class Board implements WorldState {
         }
 
         public Iterable<Position> neighborP() {
+            ArrayList<Position> neighbors = new ArrayList<>();
             ArrayList<Position> ps = new ArrayList<>();
             ps.add(new Position(row - 1, col));
             ps.add(new Position(row, col + 1));
