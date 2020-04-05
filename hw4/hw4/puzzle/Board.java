@@ -2,13 +2,14 @@ package hw4.puzzle;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Board implements WorldState {
     private int[][] grid;
     private int size;
     private int hamming;
     private int manhattan;
-    private ArrayList<WorldState> boardNeighbors = new ArrayList<>();
+    private HashSet<WorldState> boardNeighbors = new HashSet<>();
     private Position blank;
 
     public Board(int[][] tiles) {
