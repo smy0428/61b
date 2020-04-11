@@ -47,13 +47,56 @@ public class QuickSort {
     private static <Item extends Comparable> void partition(
             Queue<Item> unsorted, Item pivot,
             Queue<Item> less, Queue<Item> equal, Queue<Item> greater) {
-        // Your code here!
+
+        for (Item i: unsorted) {
+            int diff = i.compareTo(pivot);
+            if (diff < 0) {
+                less.enqueue(i);
+            } else if (diff == 0) {
+                equal.enqueue(i);
+            } else {
+                greater.enqueue(i);
+            }
+        }
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> quickSort(
             Queue<Item> items) {
-        // Your code here!
-        return items;
+        Item pivot = getRandomItem(items);
+        Queue<Item> less = new Queue<>();
+        Queue<Item> equal = new Queue<>();
+        Queue<Item> greater = new Queue<>();
+        Queue<Item> sorted = new Queue<>();
+
+        partition(items, pivot, less, equal, greater);
+        if (less.size() > 1) {
+            less = quickSort(less);
+        }
+        if (greater.size() > 1) {
+            greater = quickSort(greater);
+        }
+
+        sorted = catenate(sorted, less);
+        sorted = catenate(sorted, equal);
+        sorted = catenate(sorted, greater);
+
+        return sorted;
+    }
+
+
+    public static void main(String[] args) {
+        Queue<String> animals = new Queue<>();
+        animals.enqueue("tiger");
+        animals.enqueue("cat");
+        animals.enqueue("pig");
+        animals.enqueue("horse");
+        animals.enqueue("dog");
+        animals.enqueue("elephant");
+        animals.enqueue("zoo");
+        System.out.println("Original list before sort:\n" + animals + "\n");
+
+        Queue<String> sorted = quickSort(animals);
+        System.out.println("Sorted list:\n" + sorted + "\n");
     }
 }
