@@ -75,6 +75,22 @@ public class Rasterer {
             results.put("raster_lr_lon", lrlon);
             results.put("raster_lr_lat", lrlat);
             results.put("depth", depth);
+
+
+        // check the corner case
+        } else {
+
+            double ullat = MapServer.ROOT_ULLAT;
+            double ullon = MapServer.ROOT_ULLON;
+            double lrlat = MapServer.ROOT_LRLAT;
+            double lrlon = MapServer.ROOT_LRLON;
+
+            results.put("render_grid", new String[1][1]);
+            results.put("raster_ul_lon", ullon);
+            results.put("raster_ul_lat", ullat);
+            results.put("raster_lr_lon", lrlon);
+            results.put("raster_lr_lat", lrlat);
+
         }
         return results;
     }
