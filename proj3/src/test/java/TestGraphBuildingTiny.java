@@ -52,6 +52,7 @@ public class TestGraphBuildingTiny {
         expected.add(41L);
         expected.add(66L);
 
+
         for (long neighbor : graphTiny.adjacent(v)) {
             actual.add(neighbor);
         }
