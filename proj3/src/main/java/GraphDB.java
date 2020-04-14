@@ -6,7 +6,15 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
+
+
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -20,6 +28,8 @@ import java.util.ArrayList;
 public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
+
+    private final Map<Long, Node> graphNode = new HashMap<>();
 
     /**
      * Example constructor shows how to create and start an XML parser.
@@ -57,7 +67,18 @@ public class GraphDB {
      *  we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
-        // TODO: Your code here.
+        // Your code here.
+        Iterable<Long> vs = vertices();
+        Set<Long> unconnect = new HashSet<>();
+        for (long l1: vs) {
+            Node n = graphNode.get(l1);
+            if (n.adj.isEmpty()) {
+                unconnect.add(l1);
+            }
+        }
+        for (long l2: unconnect) {
+            graphNode.remove(l2);
+        }
     }
 
     /**
@@ -66,7 +87,7 @@ public class GraphDB {
      */
     Iterable<Long> vertices() {
         //YOUR CODE HERE, this currently returns only an empty list.
-        return new ArrayList<Long>();
+        return this.graphNode.keySet();
     }
 
     /**
@@ -75,7 +96,7 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return null;
+        return this.graphNode.get(v).adj;
     }
 
     /**
@@ -136,7 +157,19 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+        Iterable<Long> vs = vertices();
+        double dist = Double.MAX_VALUE;
+        long nearest = 0;
+        for (long l: vs) {
+            double lonV = lon(l);
+            double latV = lat(l);
+            double temp = distance(lonV, latV, lon, lat);
+            if (temp < dist) {
+                dist = temp;
+                nearest = l;
+            }
+        }
+        return nearest;
     }
 
     /**
@@ -145,7 +178,7 @@ public class GraphDB {
      * @return The longitude of the vertex.
      */
     double lon(long v) {
-        return 0;
+        return this.graphNode.get(v).lon;
     }
 
     /**
@@ -154,6 +187,83 @@ public class GraphDB {
      * @return The latitude of the vertex.
      */
     double lat(long v) {
-        return 0;
+        return this.graphNode.get(v).lat;
+    }
+
+
+    // * helper classes and methods
+    //------------------------------------------------------------
+    //------------------------------------------------------------
+
+
+    // add node to the graphNode
+    void addNode(Node node) {
+        this.graphNode.put(node.id, node);
+    }
+
+
+    // connect two nodes in graph
+    void connect(long l1, long l2) {
+        Node n1 = this.graphNode.get(l1);
+        Node n2 = this.graphNode.get(l2);
+
+        n1.adj.add(l2);
+        n2.adj.add(l1);
+    }
+
+
+    // helper class Node
+    static class Node {
+        long id;
+        double lat;
+        double lon;
+        Set<Long> adj;
+        String location;
+
+        Node(long id, double lat, double lon) {
+            this.id = id;
+            this.lat = lat;
+            this.lon = lon;
+
+            // any case node is at crossing? Edge or Set
+            adj = new HashSet<>();
+            location = null;
+        }
+
+
+        void setLocation(String s) {
+            location = s;
+        }
+    }
+
+
+    // helper class Edge
+    static class Edge {
+        long id;
+        String speed;
+        String name;
+        List<Long> nodes;
+        // more attributes according to the handler
+        Map<String, String> extraInfo;
+
+        Edge(long id) {
+            this.id = id;
+            extraInfo = new HashMap<>();
+            nodes = new ArrayList<>();
+            speed = null;
+            name = null;
+        }
+
+        void setSpeed(String s) {
+            speed = s;
+        }
+
+        void setName(String s) {
+            name = s;
+        }
+
+        void addConnection(long l) {
+            nodes.add(l);
+        }
     }
 }
