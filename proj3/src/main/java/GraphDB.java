@@ -212,12 +212,36 @@ public class GraphDB {
     }
 
 
+    void setEdge(long v, Edge e) {
+        Node n = this.graphNode.get(v);
+        if (!n.edges.contains(e)) {
+            n.edges.add(e);
+        }
+    }
+
+
+    String getStreet(long v) {
+        Node n = graphNode.get(v);
+        List<Edge> l = n.edges;
+
+        return l.get(0).name;
+    }
+
+
+    boolean changeRoad(long v) {
+        Node n = graphNode.get(v);
+        List<Edge> s = n.edges;
+        return s.size() > 1;
+    }
+
+
     // helper class Node
     static class Node {
         long id;
         double lat;
         double lon;
         Set<Long> adj;
+        List<Edge> edges;
         String location;
 
         Node(long id, double lat, double lon) {
@@ -228,6 +252,7 @@ public class GraphDB {
             // any case node is at crossing? Edge or Set
             adj = new HashSet<>();
             location = null;
+            edges = new ArrayList<>();
         }
 
 
@@ -251,7 +276,7 @@ public class GraphDB {
             extraInfo = new HashMap<>();
             nodes = new ArrayList<>();
             speed = null;
-            name = null;
+            name = Router.NavigationDirection.UNKNOWN_ROAD;
         }
 
         void setSpeed(String s) {
