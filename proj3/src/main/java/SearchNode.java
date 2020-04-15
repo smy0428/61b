@@ -33,15 +33,9 @@ public class SearchNode {
     public static class NodeComparator implements Comparator<SearchNode> {
         @Override
         public int compare(SearchNode n1, SearchNode n2) {
-            double temp = n1.distance + n1.heuristic - n2.distance - n2.heuristic;
-            if (temp > 0) {
-                return 1;
-            }
-            if (temp == 0) {
-                return 0;
-            } else {
-                return -1;
-            }
+            double d1 = n1.distance + n1.heuristic;
+            double d2 = n2.distance + n2.heuristic;
+            return Double.compare(d1, d2);
         }
     }
 }
