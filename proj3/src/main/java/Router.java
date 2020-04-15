@@ -1,5 +1,10 @@
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Collections;
+import java.util.PriorityQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +30,48 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+
+        ArrayList<Long> results = new ArrayList<>();
+        PriorityQueue<SearchNode> pq = new PriorityQueue<>(new SearchNode.NodeComparator());
+        Set<Long> mark = new HashSet<>();
+
+        long start = g.closest(stlon, stlat);
+        long end = g.closest(destlon, destlat);
+
+        SearchNode root = new SearchNode(start, null, 0, 0);
+        pq.add(root);
+
+        while (!pq.isEmpty()) {
+            SearchNode currN = pq.poll();
+            long currL = currN.getId();
+            mark.add(currL);
+
+            if (currL == end) {
+                SearchNode nn = currN;
+                while (nn != null) {
+                    results.add(nn.getId());
+                    nn = nn.getPre();
+                }
+                Collections.reverse(results);
+                return results;
+            }
+
+            for (long nextL : g.adjacent(currL)) {
+                if (!mark.contains(nextL)) {
+                    double dis = currN.getDistance() + g.distance(currL, nextL);
+                    double heu = g.distance(nextL, end);
+
+                    if (currN == root) {
+                        SearchNode nextN = new SearchNode(nextL, currN, dis, heu);
+                        pq.add(nextN);
+                    } else if (nextL != currN.getPre().getId()) {
+                        SearchNode nextN = new SearchNode(nextL, currN, dis, heu);
+                        pq.add(nextN);
+                    }
+                }
+            }
+        }
+        return results;
     }
 
     /**
@@ -37,7 +83,78 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+
+        List<NavigationDirection> directions = new ArrayList<>();
+
+        if (route.size() < 1) {
+            return directions;
+        }
+
+        if (route.size() == 1) {
+            NavigationDirection arrive = new NavigationDirection();
+
+            String name = g.getStreet(route.get(0));
+            arrive.way = name;
+            directions.add(arrive);
+            return directions;
+        }
+
+        int size = route.size();
+        int direction = 0;
+        double dist = g.distance(route.get(0), route.get(1));
+        double prevBearing = g.bearing(route.get(0), route.get(1));
+        String prevName = g.getStreet(route.get(0));
+
+
+        for (int i = 1; i < size - 1; i += 1) {
+            double currBearing = g.bearing(route.get(i), route.get(i + 1));
+            double diff = currBearing - prevBearing;
+            double currDist = g.distance(route.get(i), route.get(i + 1));
+            String currName = g.getStreet(route.get(i));
+            boolean change = g.changeRoad(route.get(i));
+
+            if (!change) {
+                dist += currDist;
+
+            } else {
+
+                NavigationDirection nd = new NavigationDirection();
+                nd.distance = dist;
+                nd.direction = direction;
+                nd.way = prevName;
+                directions.add(nd);
+
+
+                if (diff >= -15 && diff <= 15) {
+                    direction = NavigationDirection.STRAIGHT;
+                } else if (diff < -15 && diff >= -30) {
+                    direction = NavigationDirection.SLIGHT_LEFT;
+                } else if (diff > 15 && diff <= 30) {
+                    direction = NavigationDirection.SLIGHT_RIGHT;
+                } else if (diff < -30 && diff > -100) {
+                    direction = NavigationDirection.LEFT;
+                } else if (diff > 30 && diff <= 100) {
+                    direction = NavigationDirection.RIGHT;
+                } else if (diff < -100) {
+                    direction = NavigationDirection.SHARP_LEFT;
+                } else if (diff > 100) {
+                    direction = NavigationDirection.SHARP_RIGHT;
+                }
+
+                dist = 0;
+
+            }
+            prevName = currName;
+            prevBearing = currBearing;
+        }
+
+        NavigationDirection last = new NavigationDirection();
+        last.way = prevName;
+        last.distance = dist;
+        last.direction = direction;
+        directions.add(last);
+
+        return directions;
     }
 
 

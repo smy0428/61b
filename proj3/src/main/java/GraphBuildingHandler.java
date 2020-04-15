@@ -162,6 +162,10 @@ public class GraphBuildingHandler extends DefaultHandler {
                     for (int i = 0; i < size - 1; i += 1) {
                         g.connect(currEdge.nodes.get(i), currEdge.nodes.get(i + 1));
                     }
+                    for (int i = 0; i < size; i += 1) {
+                        g.setEdge(currEdge.nodes.get(i), currEdge);
+                    }
+
                 }
                 currEdge = null;
             }
