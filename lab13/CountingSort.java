@@ -77,9 +77,9 @@ public class CountingSort {
             }
         }
 
-        // none negative, use naive approach
+        // none negative, use helper approach
         if (a == 0) {
-            return naiveCountingSort(arr);
+            return helperSort(arr);
         }
 
         // split the negative and positive integer
