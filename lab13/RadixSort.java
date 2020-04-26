@@ -16,8 +16,22 @@ public class RadixSort {
      * @return String[] the sorted array
      */
     public static String[] sort(String[] asciis) {
-        // TODO: Implement LSD Sort
-        return null;
+        // Implement LSD Sort
+        int len = asciis.length;
+        String[] sorted = new String[len];
+        int i = 0;
+        int maxLength = 0;
+        for (String str: asciis) {
+            maxLength = Math.max(maxLength, str.length());
+            sorted[i] = str;
+            i += 1;
+        }
+
+        for (int k = maxLength - 1; k >= 0; k -= 1) {
+            sortHelperLSD(sorted, k);
+        }
+
+        return sorted;
     }
 
     /**
@@ -28,7 +42,48 @@ public class RadixSort {
      */
     private static void sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
-        return;
+
+        int size = 256;
+
+        int[] counts = new int[size];
+        int[] starts = new int[size];
+        int len = asciis.length;
+        String[] sorted = new String[len];
+        System.arraycopy(asciis, 0, sorted, 0, len);
+
+        int temp;
+        for (String str: asciis) {
+            temp = getInt(str, index);
+            counts[temp] += 1;
+        }
+
+        int curr = 0;
+        for (int i = 0; i < size; i += 1) {
+            starts[i] += curr;
+            curr += counts[i];
+        }
+
+        int num;
+        int pos;
+        for (String str: asciis) {
+            num = getInt(str, index);
+            pos = starts[num];
+            starts[num] += 1;
+            sorted[pos] = str;
+        }
+
+        System.arraycopy(sorted, 0, asciis, 0, len);
+    }
+
+
+    private static int getInt(String str, int index) {
+        if (str.length() <= index) {
+            return 0;
+        } else {
+            char c = str.charAt(index);
+            int i = (int) c;
+            return i;
+        }
     }
 
     /**
