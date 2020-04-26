@@ -69,13 +69,11 @@ public class CountingSort {
         // make counting sort work with arrays containing negative numbers.
 
         int a = 0;
-        int b = 0;
+        int len = arr.length;
 
         for (int i: arr) {
             if (i < 0) {
                 a += 1;
-            } else {
-                b += 1;
             }
         }
 
@@ -86,7 +84,7 @@ public class CountingSort {
 
         // split the negative and positive integer
         int[] neg = new int[a];
-        int[] pos = new int[b];
+        int[] pos = new int[len - a];
 
         int aIndex = 0;
         int bIndex = 0;
@@ -100,9 +98,9 @@ public class CountingSort {
             }
         }
 
-        int[] sortNeg = naiveCountingSort(neg);
-        int[] sortPos = naiveCountingSort(pos);
-        int[] sorted = new int[a + b];
+        int[] sortNeg = helperSort(neg);
+        int[] sortPos = helperSort(pos);
+        int[] sorted = new int[len];
 
         int indexNeg = a - 1;
         for (int i: sortNeg) {
@@ -115,6 +113,32 @@ public class CountingSort {
             sorted[indexPos] = i;
             indexPos += 1;
         }
+        return sorted;
+    }
+
+    private static int[] helperSort(int[] arr) {
+        // find max
+        int max = Integer.MIN_VALUE;
+        for (int i : arr) {
+            max = Math.max(max, i);
+        }
+
+        // gather all the counts for each value
+        int[] counts = new int[max + 1];
+        for (int i : arr) {
+            counts[i]++;
+        }
+
+        // when we're dealing with ints, we can just put each value
+        // count number of times into the new array
+        int[] sorted = new int[arr.length];
+        int k = 0;
+        for (int i = 0; i < counts.length; i += 1) {
+            for (int j = 0; j < counts[i]; j += 1, k += 1) {
+                sorted[k] = i;
+            }
+        }
+        // return the sorted array
         return sorted;
     }
 }
