@@ -43,7 +43,7 @@ public class RadixSort {
     private static void sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
 
-        int size = 256;
+        int size = 257;
 
         int[] counts = new int[size];
         int[] starts = new int[size];
@@ -76,12 +76,13 @@ public class RadixSort {
     }
 
 
-    private static int getInt(String str, int index) {
+    public static int getInt(String str, int index) {
         if (str.length() <= index) {
             return 0;
         } else {
             char c = str.charAt(index);
             int i = (int) c;
+            i += 1;
             return i;
         }
     }
