@@ -82,6 +82,22 @@ public class CountingSort {
             return helperSort(arr);
         }
 
+        // only negative, use helper approach
+        if (a == len) {
+            int[] temp = new int[len];
+            int index = 0;
+            for (int i: arr) {
+                temp[index] = -i;
+                index += 1;
+            }
+            int[] temp2 = helperSort(temp);
+            for (int j = 0; j < len; j += 1) {
+                temp[j] = -1 * temp2[len - j];
+            }
+            return temp;
+        }
+
+
         // split the negative and positive integer
         int[] neg = new int[a];
         int[] pos = new int[len - a];
