@@ -17,7 +17,8 @@ public class SeamCarver {
 
 
     public Picture picture() {
-        return pic;
+        // in order to protect
+        return new Picture(pic);
     }
 
 
