@@ -1,14 +1,18 @@
 import edu.princeton.cs.algs4.Picture;
+//import java.awt.Color;
 
 public class SeamCarver {
 
     private Picture pic;
+    private double[][] energy;
 
 
     // current picture
     public SeamCarver(Picture picture) {
         // pic = picture;
         pic = new Picture(picture);
+        energy = energyInitial();
+
     }
 
 
@@ -32,23 +36,7 @@ public class SeamCarver {
         validateColumnIndex(x);
         validateRowIndex(y);
 
-        //int rgbCenter = pic.getRGB(x, y);
-        int rgbLeft = pic.getRGB(leftX(x), leftY(y));
-        int rgbRight = pic.getRGB(rightX(x), rightY(y));
-        int rgbUp = pic.getRGB(upX(x), upY(y));
-        int rgbDown = pic.getRGB(downX(x), downY(y));
-
-        int xR = rgbR(rgbLeft) - rgbR(rgbRight);
-        int xG = rgbG(rgbLeft) - rgbG(rgbRight);
-        int xB = rgbB(rgbLeft) - rgbB(rgbRight);
-
-        int yR = rgbR(rgbUp) - rgbR(rgbDown);
-        int yG = rgbG(rgbUp) - rgbG(rgbDown);
-        int yB = rgbB(rgbUp) - rgbB(rgbDown);
-
-        double energy = xR * xR + xG * xG + xB * xB + yR * yR + yG * yG + yB * yB;
-
-        return energy;
+        return energy[y][x];
     }
 
 
@@ -131,11 +119,13 @@ public class SeamCarver {
     // remove horizontal seam from picture
     public void removeHorizontalSeam(int[] seam) {
         pic = SeamRemover.removeHorizontalSeam(pic, seam);
+        energy = energyInitial();
     }
 
     // remove vertical seam from picture
     public void removeVerticalSeam(int[] seam) {
         pic = SeamRemover.removeVerticalSeam(pic, seam);
+        energy = energyInitial();
     }
 
     private void validateRowIndex(int row) {
@@ -150,32 +140,6 @@ public class SeamCarver {
             throw new IndexOutOfBoundsException(
                     "column index must be between 0 and " + (width() - 1) + ": " + col);
         }
-    }
-
-
-    // helper method to generate the energy cost at certain level;
-    private double[] energyCost(double[] prev, int y) {
-
-        double[] curr = new double[width()];
-        for (int x = 0; x < width(); x += 1) {
-            curr[x] = energy(x, y) + minPrev(x, y);
-        }
-
-        return curr;
-    }
-
-
-    private double minPrev(int x, int y) {
-        if (y == 0) {
-            return 0;
-        }
-        double min = energy(x, y - 1);
-        double d1 = energy(getLeft(x), y - 1);
-        double d2 = energy(getRight(x), y - 1);
-        min = Math.min(d1, min);
-        min = Math.min(d2, min);
-
-        return min;
     }
 
 
@@ -226,22 +190,6 @@ public class SeamCarver {
         return (rgb) & 0xFF;
     }
 
-
-    // helper method to get left and right pixel if it exists;
-    private int getLeft(int i) {
-        if (i == 0) {
-            return 0;
-        }
-        return i - 1;
-    }
-
-    private int getRight(int i) {
-        if (i == width()) {
-            return i;
-        }
-        return i + 1;
-    }
-
     // to transpose the image fit for the horizontalSeam
     private void rotate() {
         Picture var = new Picture(height(), width());
@@ -252,6 +200,37 @@ public class SeamCarver {
         }
 
         pic = var;
+        energy = energyInitial();
     }
 
+
+    // initial generate the energy matrix
+    private double[][] energyInitial() {
+
+        int h = pic.height();
+        int w = pic.width();
+
+        double[][] result = new double[h][w];
+        for (int i = 0; i < h; i += 1) {
+            for (int j = 0; j < w; j += 1) {
+                int rgbLeft = pic.getRGB(leftX(j), leftY(i));
+                int rgbRight = pic.getRGB(rightX(j), rightY(i));
+                int rgbUp = pic.getRGB(upX(j), upY(i));
+                int rgbDown = pic.getRGB(downX(j), downY(i));
+
+                int xR = rgbR(rgbLeft) - rgbR(rgbRight);
+                int xG = rgbG(rgbLeft) - rgbG(rgbRight);
+                int xB = rgbB(rgbLeft) - rgbB(rgbRight);
+
+                int yR = rgbR(rgbUp) - rgbR(rgbDown);
+                int yG = rgbG(rgbUp) - rgbG(rgbDown);
+                int yB = rgbB(rgbUp) - rgbB(rgbDown);
+
+                double curr = xR * xR + xG * xG + xB * xB + yR * yR + yG * yG + yB * yB;
+
+                result[i][j] = curr;
+            }
+        }
+        return result;
+    }
 }
