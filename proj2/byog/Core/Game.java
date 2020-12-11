@@ -9,7 +9,8 @@ public class Game {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
-    private static final long SEED = 28042007;
+    private static final long SEED = 438438438;
+    //28042007, 20100428, 2020202, 20180818
     private static final Random RANDOM = new Random(SEED);
 
 
@@ -18,7 +19,6 @@ public class Game {
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
-        return;
     }
 
     /**
@@ -37,23 +37,38 @@ public class Game {
         // Fill out this method to run the game using the input passed in,
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
-
-        // TETile[][] finalWorldFrame = null;
-
-        /** first generate a empty world. */
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
         for (int x = 0; x < WIDTH; x += 1) {
             for (int y = 0; y < HEIGHT; y += 1) {
                 finalWorldFrame[x][y] = Tileset.NOTHING;
             }
         }
+
+        char[] cArray = input.toCharArray();
+        if (cArray[0] == 'n' || cArray[0] == 'N') {
+            newGame(finalWorldFrame, cArray);
+
+        } else if (cArray[0] == 'l' || cArray[0] == 'L') {
+            loadGame(finalWorldFrame, cArray);
+        } else {
+            System.out.println("argument should start with n or l.");
+            System.exit(0);
+        }
         return finalWorldFrame;
     }
 
 
-    /**
-     * not so simple class to present the world map of exterior/wall/floor
-     */
+    public void newGame(TETile[][] t, char[] cArray) {
+
+
+
+    }
+
+    public void loadGame(TETile[][] t, char[] cArray) {
+
+    }
+
+
 
 
 
@@ -76,7 +91,7 @@ public class Game {
     public void addNextN(Room first, World w) {
         Room next = first.nextRoom();
         addFirst(next, w);
-        while (w.getUsage() < 0.5) {
+        while (w.getUsage() < 0.55) {
             addNextN(next, w);
         }
     }
@@ -98,7 +113,7 @@ public class Game {
         }
 
         Position start = new Position(0, 0);
-        World w = new World(WIDTH, HEIGHT);
+        World w = new World(WIDTH, HEIGHT, RANDOM);
         Game game = new Game();
         Room first = new Room(RANDOM, 9, w);
         first.drawRoom(7, 4, start);
@@ -107,6 +122,7 @@ public class Game {
 
         game.addFirst(first, w);
         game.addNextN(first, w);
+        w.addDoor(3);
 
 
         for (int i = 0; i < w.getPropertyMap().length; i += 1) {
@@ -116,6 +132,9 @@ public class Game {
                 }
                 if (w.getPropertyMap()[i][k].equals("floor")) {
                     finalWorldFrame[i][k] = Tileset.MOUNTAIN;
+                }
+                if (w.getPropertyMap()[i][k].equals("door")) {
+                    finalWorldFrame[i][k] = Tileset.LOCKED_DOOR;
                 }
             }
         }

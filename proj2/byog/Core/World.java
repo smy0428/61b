@@ -1,16 +1,20 @@
 package byog.Core;
 
+import java.util.Random;
+
 public class World {
     private int floorTiles;
     private int wallTiles;
     private String[][] propertyMap;
     private int width;
     private int height;
+    private Random random;
 
 
-    public World(int w, int h) {
+    public World(int w, int h, Random r) {
         this.width = w;
         this.height = h;
+        random = r;
 
         propertyMap = new String[width][height];
         for (int i = 0; i < width; i += 1) {
@@ -37,6 +41,18 @@ public class World {
             propertyMap[p.getX()][p.getY()] = "floor";
             floorTiles += 1;
             wallTiles -= 1;
+        }
+    }
+
+    public void addDoor(int k) {
+        for (int i = 0; i < k; i += 1) {
+            int x = random.nextInt(width);
+            int y = random.nextInt(height);
+            while (!propertyMap[x][y].equals("wall") && !propertyMap[x][y].equals("door")) {
+                x = random.nextInt(width);
+                y = random.nextInt(height);
+            }
+            propertyMap[x][y] = "door";
         }
     }
 
